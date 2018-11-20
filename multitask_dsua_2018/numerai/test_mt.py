@@ -11,8 +11,6 @@ import matplotlib.pylab as plt
 from sklearn import metrics, preprocessing, linear_model
 
 
-# In[2]:
-
 np.random.seed(777)
 
 train = pd.read_csv('numerai_training_data.csv', header=0)
@@ -39,9 +37,6 @@ Y_target_elizabeth_validation = validation['target_elizabeth']
 Y_target_jordan_validation = validation['target_jordan']
 Y_target_ken_validation = validation['target_ken']
 X_val = x_prediction
-
-
-# In[23]:
 
 from keras.models import Sequential
 from keras.models import Model
@@ -81,19 +76,6 @@ predictions_target_charles = Dense(1, activation='sigmoid', name = 'target_charl
 predictions_target_elizabeth = Dense(1, activation='sigmoid', name = 'target_elizabeth')(c)
 predictions_target_jordan = Dense(1, activation='sigmoid', name = 'target_jordan')(c)
 predictions_target_ken = Dense(1, activation='sigmoid', name = 'target_ken')(c)
-
-# predictions_target_bernie = Dense(1, activation='sigmoid', name = 'target_bernie', kernel_regularizer = regularizers.l2(1e-6))(c)
-# predictions_target_charles = Dense(1, activation='sigmoid', name = 'target_charles', kernel_regularizer = regularizers.l2(1e-6))(c)
-# predictions_target_elizabeth = Dense(1, activation='sigmoid', name = 'target_elizabeth', kernel_regularizer = regularizers.l2(1e-6))(c)
-# predictions_target_jordan = Dense(1, activation='sigmoid', name = 'target_jordan', kernel_regularizer = regularizers.l2(1e-6))(c)
-# predictions_target_ken = Dense(1, activation='sigmoid', name = 'target_ken', kernel_regularizer = regularizers.l2(1e-6))(c)
-
-# predictions_target_bernie = GaussianNoise(0.05)(predictions_target_bernie)
-# predictions_target_charles = GaussianNoise(0.05)(predictions_target_charles)
-# predictions_target_elizabeth = GaussianNoise(0.05)(predictions_target_elizabeth)
-# predictions_target_jordan = GaussianNoise(0.05)(predictions_target_jordan)
-# predictions_target_ken = GaussianNoise(0.05)(predictions_target_ken)
-
 
 model = Model(inputs=[inputs], outputs=[
     predictions_target_bernie,
@@ -149,8 +131,6 @@ print 'KEN'
 print "- LL:", metrics.log_loss(validation['target_ken'], pred4)
 print "- ROC AUC:", metrics.roc_auc_score(validation['target_ken'], pred4)
 
-# In[12]:
-
 x_prediction = tournament[features]
 live_prediction = model.predict(x_prediction)
 for i, name in enumerate(['bernie', 'charles', 'elizabeth', 'jordan', 'ken']):
@@ -159,33 +139,4 @@ for i, name in enumerate(['bernie', 'charles', 'elizabeth', 'jordan', 'ken']):
   results_df = pd.DataFrame(data={'probability_' + name: y_prediction[:, 0]})
   joined = pd.DataFrame(ids).join(results_df)
   joined.to_csv(name + "submission.csv", index=False)
-
-
-
-# TODO 
-# hyperparameters search + real CV + era CV
-# era as a loss
-# sequential noise decrease and dropout decrease
-# train a bit on validation too (?)
-# validation loss shouldn't be snaller than train one - underfit!
-# maybe it really makes sense to find the "closest" eras to the live
-
-
-
-# Epoch 00034: val_loss did not improve
-# BERNIE
-# - LL: 0.692173709871
-# - ROC AUC: 0.525666057264
-# CHARLES
-# - LL: 0.692204019132
-# - ROC AUC: 0.525106954091
-# ELIZABETH
-# - LL: 0.692542900437
-# - ROC AUC: 0.520031879667
-# JORDAN
-# - LL: 0.692254850028
-# - ROC AUC: 0.523773649512
-# KEN
-# - LL: 0.6920574158
-# - ROC AUC: 0.527108287123
 
